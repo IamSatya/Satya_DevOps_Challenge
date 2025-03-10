@@ -1,0 +1,186 @@
+---
+# Playbook generates key, CSR and self-signed SSL certificates for CA and domain of interest
+#
+# To run (replace with your own values):
+# ```
+# ansible-playbook \
+#  --extra-vars 'cert_common_name=domain.example.com' \
+#  --extra-vars '{"cert_subject_alt_name":["DNS:*.example.com","DNS:*.subdomain.example.com"]}' \
+#  generate_ssl_keys_csr_certificates.yml
+# ```
+#
+# Generated stuff at /tmp/ssl:
+# key:
+#   /tmp/ssl/keys/[domain].key
+# csr:
+#   /tmp/ssl/csrs/[domain].csr
+# certificate (self-signed):
+#   /tmp/ssl/certs/example.com.crt
+#
+#
+# Credit: https://www.jeffgeerling.com/blog/2017/generating-self-signed-openssl-certs-ansible-24s-crypto-modules
+
+- hosts: localhost
+  gather_facts: no
+
+  # Change these to your needs
+  vars:
+    app_user: "www-data"
+    http_host: "cloudapp.azure.com"
+    http_conf: "cloudapp.azure.com.conf"
+    https_conf: "cloudapp.azure.com.ssl.conf"
+    http_port: "80"
+    https_port: "443"
+    disable_default: true
+
+    # SSL Certificate Common Name
+    cert_common_name: cloudapp.azure.com
+    # SSL Certificate Subject Alternative Name (SAN)
+    cert_subject_alt_name:
+      - "DNS:*.cloudapp.azure.com"
+        #- "DNS:*.subdomain.example.com"
+    # Keep in-line of modern cert expiry requirement - 13 months max
+    ownca_not_after: "+397d"
+    # Allow custom CA name, Organisation (shows up nicely in certificate mangers)
+    openssl_csr_common_name: "Self-Signed CA"
+    openssl_csr_organization_name: "Self-Signed Organisation"
+
+  tasks:
+    - name: Create local directories
+      file:
+        state: directory
+        path: "{{item}}"
+      with_items:
+        - /tmp/ssl/keys/
+        - /tmp/ssl/csrs/
+        - /tmp/ssl/certs/
+
+    # Generate Certificate Authority (CA) self-signed certificate
+    - name: Generate Certificate Authority (CA) self-signed certificate
+      block:
+        - name: Generate Root CA private key
+          openssl_privatekey:
+            path: "/tmp/ssl/keys/ca.key"
+
+        - name: Generate Root CA CSR
+          openssl_csr:
+            path: "/tmp/ssl/csrs/ca.csr"
+            privatekey_path: "/tmp/ssl/keys/ca.key"
+            common_name: "{{openssl_csr_common_name}}"
+            organization_name: "{{openssl_csr_organization_name}}"
+            basic_constraints:
+              - CA:TRUE
+            basic_constraints_critical: yes
+            key_usage:
+              - keyCertSign
+              - digitalSignature
+              - cRLSign
+            key_usage_critical: yes
+
+        - name: Generate Root CA certificate
+          openssl_certificate:
+            path: "/tmp/ssl/certs/ca.crt"
+            privatekey_path: "/tmp/ssl/keys/ca.key"
+            csr_path: "/tmp/ssl/csrs/ca.csr"
+            provider: selfsigned
+    # /Generate Certificate Authority (CA) self-signed certificate
+
+    # Generate domain key, CSR and self-signed certificate (using own CA)
+    - name: Generate domain key, CSR and self-signed certificate (using own CA)
+      block:
+        - name: Generate host/internal domain private key
+          openssl_privatekey:
+            path: "/tmp/ssl/keys/{{cert_common_name}}.key"
+
+        - name: Generate host/internal domain CSR
+          openssl_csr:
+            path: "/tmp/ssl/csrs/{{cert_common_name}}.csr"
+            privatekey_path: "/tmp/ssl/keys/{{cert_common_name}}.key"
+            common_name: "{{cert_common_name}}"
+            organization_name: "{{openssl_csr_organization_name}}"
+            subject_alt_name: "{{cert_subject_alt_name}}"
+
+        - name: Generate host/internal domain certificate (with own self-signed CA)
+          openssl_certificate:
+            path: "/tmp/ssl/certs/{{cert_common_name}}.hostonly.crt"
+            csr_path: "/tmp/ssl/csrs/{{cert_common_name}}.csr"
+            ownca_path: "/tmp/ssl/certs/ca.crt"
+            ownca_privatekey_path: "/tmp/ssl/keys/ca.key"
+            ownca_not_after: "{{ownca_not_after}}"
+            provider: ownca
+
+        # This is the certificate for actual deployment, with full chain of trust
+        # https://www.digicert.com/ssl-support/pem-ssl-creation.htm
+        - name: Generate host/internal domain certificate (with own self-signed CA) - with full chain of trust
+          copy:
+            content: "{{
+                lookup('file','/tmp/ssl/certs/{{cert_common_name}}.hostonly.crt')+'\n'+
+                lookup('file','/tmp/ssl/certs/ca.crt')+'\n'
+              }}"
+            dest: "/tmp/ssl/certs/{{cert_common_name}}.crt"
+    # Generate domain key, CSR and self-signed certificate (using own CA)
+    - name: Install prerequisites
+      apt: name={{ item }} update_cache=yes state=latest force_apt_get=yes
+      loop: [ 'aptitude' ]
+
+    - name: Install Apache
+      apt: name=apache2 update_cache=yes state=latest
+
+    - name: Create document root
+      file:
+        path: "/var/www/{{ http_host }}"
+        state: directory
+        owner: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Copy index test page
+      template:
+        src: "files/index.html.j2"
+        dest: "/var/www/{{ http_host }}/index.html"
+
+    - name: Set up Apache virtuahHost
+      template:
+        src: "files/apache.conf.j2"
+        dest: "/etc/apache2/sites-available/{{ http_conf }}"
+
+    - name: Enable new site
+      shell: /usr/sbin/a2ensite {{ http_conf }}
+      notify: Reload Apache
+
+    - name: Set up Apache SSL virtuahHost
+      template:
+        src: "files/apachessl.conf.j2"
+        dest: "/etc/apache2/sites-available/{{ https_conf }}"
+
+    - name: Enable new SSL site
+      shell: /usr/sbin/a2ensite {{ https_conf }}
+      notify: Reload Apache
+
+
+    - name: Disable default Apache site
+      shell: /usr/sbin/a2dissite 000-default.conf
+      when: disable_default
+      notify: Reload Apache
+
+    - name: "UFW - Allow HTTP on port {{ http_port }}"
+      ufw:
+        rule: allow
+        port: "{{ http_port }}"
+        proto: tcp
+
+    - name: "UFW - Allow HTTPS on port {{ https_port }}"
+      ufw:
+        rule: allow
+        port: "{{ https_port }}"
+        proto: tcp
+
+  handlers:
+    - name: Reload Apache
+      service:
+        name: apache2
+        state: reloaded
+
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
