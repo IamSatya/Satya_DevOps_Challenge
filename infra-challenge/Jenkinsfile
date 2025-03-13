@@ -13,7 +13,6 @@ properties([
 ])
 pipeline {
     agent any
-    load "/var/lib/jenkins/azurecreds"
     stages {
         stage('Git Clone') {
             steps {
@@ -28,6 +27,7 @@ pipeline {
         stage('Terraform Action') {
             steps {
 		script {
+			load "/var/lib/jenkins/azurecreds"
 			dir("infra-challenge/") {
 			sh 'terraform init'
               		sh 'terraform validate'
