@@ -3,7 +3,7 @@ resource "random_pet" "lb_hostname" {
 
 resource "azurerm_resource_group" "rg" {
     name = "fmc-satya"
-    location = "canadacentral"
+    location = var.region
   
 }
 

@@ -1,21 +1,33 @@
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '20')), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], [$class: 'JobRestrictionProperty'],
+  parameters([
+    choice(choices: "eastus\ncanadacentral\nasiapacific\naustraliacentral\neurope\neastus2", description: 'azure region:', name: 'region'),
+    choice(choices: "DEV\nQA\nEDU\nSTAGE\nPROD", description: 'Environment:', name: 'ENV'),
+    string(defaultValue: 'just my wish', description: 'Jira ticket in  project', name: 'reason'),
+    booleanParam(defaultValue: true, description: 'Create new environment after generate', name: 'create_environment'),
+    ]),
+  pipelineTriggers([])
+])
+
 pipeline {
     agent none
     stages {
-        stage('Non-Sequential Stage') {
-            agent {
-                label 'for-non-sequential'
-            }
+        stage('Git Clone') {
             steps {
-                echo "On Non-Sequential Stage"
+                checkout changelog: false,
+                poll: false,
+                scm: scmGit(branches: [[name: '*/master']],
+                extensions: [],
+                userRemoteConfigs: [[url: 'https://github.com/IamSatya/Satya_DevOps_Challenge.git']])
             }
         }
+
+        stage('Terraform Action') {
+            steps {
+                sh 'terraform apply -var=ENV=$ENV -var=region=$region --auto--approve'
+            }
+        }
+
         stage('Sequential') {
-            agent {
-                label 'for-sequential'
-            }
-            environment {
-                FOR_SEQUENTIAL = "some-value"
-            }
             stages {
                 stage('In Sequential 1') {
                     steps {
