@@ -7,8 +7,7 @@ properties([
   parameters([
     choice(choices: "eastus\ncanadacentral\nasiapacific\naustraliacentral\neurope\neastus2", description: 'azure region:', name: 'region'),
     choice(choices: "DEV\nQA\nEDU\nSTAGE\nPROD", description: 'Environment:', name: 'ENV'),
-    string(defaultValue: 'just my wish', description: 'Jira ticket in  project', name: 'reason'),
-    booleanParam(defaultValue: true, description: 'Create new environment after generate', name: 'create_environment')
+    string(defaultValue: 'satya.fmc.com', description: 'Domain Name', name: 'domainname')
     ])
 ])
 pipeline {
@@ -31,7 +30,7 @@ pipeline {
 			dir("infra-challenge/") {
 			sh 'terraform init'
               		sh 'terraform validate'
-               		sh 'terraform apply -var=ENV=${ENV} -var=region=${region} -var=client_id="${client_id}" -var=client_secret="${client_secret}" -var=tenant_id="${tenant_id}" -var=subscription_id="${subscription_id}"  --auto-approve'
+               		sh 'terraform destroy -var=domain_name=${domainname} -var=ENV=${ENV} -var=region=${region} -var=client_id="${client_id}" -var=client_secret="${client_secret}" -var=tenant_id="${tenant_id}" -var=subscription_id="${subscription_id}"  --auto-approve'
 		}
             }
         }
