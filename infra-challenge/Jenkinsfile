@@ -15,7 +15,7 @@ pipeline {
             steps {
                 checkout changelog: false,
                 poll: false,
-                scm: scmGit(branches: [[name: '*/master']],
+                scm: scmGit(branches: [[name: '*/main']],
                 extensions: [],
                 userRemoteConfigs: [[url: 'https://github.com/IamSatya/Satya_DevOps_Challenge.git']])
             }
@@ -23,7 +23,9 @@ pipeline {
 
         stage('Terraform Action') {
             steps {
-                sh 'terraform apply -var=ENV=$ENV -var=region=$region --auto--approve'
+                sh 'terraform init'
+                sh 'terraform validate'
+                sh 'terraform plan -var=ENV=$ENV -var=region=$region --auto--approve'
             }
         }
 
