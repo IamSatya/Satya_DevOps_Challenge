@@ -3,7 +3,7 @@ properties([
     choice(choices: "eastus\ncanadacentral\nasiapacific\naustraliacentral\neurope\neastus2", description: 'azure region:', name: 'region'),
     choice(choices: "DEV\nQA\nEDU\nSTAGE\nPROD", description: 'Environment:', name: 'ENV'),
     string(defaultValue: 'satya.fmc.com', description: 'Domain Name', name: 'domainname'),
-    choice(choices: "apply\nplan\n\ndestory\nrefresh", description: 'TF Action:', name: 'tfact')
+    choice(choices: "apply\nplan\ndestroy\nrefresh", description: 'TF Action:', name: 'tfact')
     ])
 ])
 pipeline {
