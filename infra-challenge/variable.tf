@@ -7,3 +7,9 @@ variable region {
   type = string
   default = "canadacentral"
 }
+
+variable ENV {
+  type = string
+  default = "DEV"
+}
+
