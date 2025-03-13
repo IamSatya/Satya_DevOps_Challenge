@@ -25,7 +25,7 @@ pipeline {
 			dir("infra-challenge/") {
 			sh 'terraform init'
               		sh 'terraform validate'
-               		sh 'echo "Satya"'
+               		sh 'terraform plan -var=ENV=${ENV} -var=region=${region} --auto--approve'
 		}
             }
         }
