@@ -15,7 +15,7 @@ pipeline {
             steps {
                 checkout changelog: false,
                 poll: false,
-                scm: scmGit(branches: [[name: '*/main']],
+                scm: scmGit(branches: [name: '*/main'],
                 extensions: [],
                 userRemoteConfigs: [[url: 'https://github.com/IamSatya/Satya_DevOps_Challenge.git']])
             }
