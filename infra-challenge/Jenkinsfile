@@ -26,7 +26,6 @@ pipeline {
         stage('Terraform Action') {
             steps {
 		script {
-			load "/var/lib/jenkins/azurecreds"
 			dir("infra-challenge/") {
 			sh '''
 			  set +x
