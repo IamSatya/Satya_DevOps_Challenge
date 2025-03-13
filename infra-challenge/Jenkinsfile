@@ -1,11 +1,9 @@
-properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '20')), [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], [$class: 'JobRestrictionProperty'],
-  parameters([
+parameters([
     choice(choices: "eastus\ncanadacentral\nasiapacific\naustraliacentral\neurope\neastus2", description: 'azure region:', name: 'region'),
     choice(choices: "DEV\nQA\nEDU\nSTAGE\nPROD", description: 'Environment:', name: 'ENV'),
     string(defaultValue: 'just my wish', description: 'Jira ticket in  project', name: 'reason'),
     booleanParam(defaultValue: true, description: 'Create new environment after generate', name: 'create_environment')
     ])
-])
 
 pipeline {
     agent none
