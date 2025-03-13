@@ -6,7 +6,7 @@ parameters([
     ])
 
 pipeline {
-    agent none
+    agent any
     stages {
         stage('Git Clone') {
             steps {
