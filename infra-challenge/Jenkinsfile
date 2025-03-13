@@ -4,8 +4,7 @@ properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKe
     choice(choices: "DEV\nQA\nEDU\nSTAGE\nPROD", description: 'Environment:', name: 'ENV'),
     string(defaultValue: 'just my wish', description: 'Jira ticket in  project', name: 'reason'),
     booleanParam(defaultValue: true, description: 'Create new environment after generate', name: 'create_environment')
-    ]),
-  pipelineTriggers([])
+    ])
 ])
 
 pipeline {
