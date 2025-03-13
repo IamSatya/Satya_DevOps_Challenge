@@ -31,7 +31,7 @@ pipeline {
 			dir("infra-challenge/") {
 			sh 'terraform init'
               		sh 'terraform validate'
-               		sh 'terraform apply -var=ENV=${ENV} -var=region=${region} -var=client_id=env.client_id -var=client_secret=env.client_secret -var=tenant_id=env.tenant_id -var=subscription_id=env.subscription_id  --auto-approve'
+               		sh 'terraform apply -var=ENV=${ENV} -var=region=${region} -var=client_id=${env.client_id} -var=client_secret=${env.client_secret} -var=tenant_id=${env.tenant_id} -var=subscription_id=${env.subscription_id}  --auto-approve'
 		}
             }
         }
