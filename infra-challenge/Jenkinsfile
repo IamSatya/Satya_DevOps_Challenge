@@ -23,12 +23,13 @@ pipeline {
         stage('Terraform Action') {
             steps {
 		script {
+			dir("infra-challenge/") {
 			sh 'terraform init'
               		sh 'terraform validate'
                		sh 'echo "Satya"'
 		}
             }
         }
-
+      }
     }
 }
