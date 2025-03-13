@@ -23,9 +23,11 @@ pipeline {
 
         stage('Terraform Action') {
             steps {
-                sh 'terraform init'
-                sh 'terraform validate'
-                sh 'terraform plan -var=ENV=$ENV -var=region=$region --auto--approve'
+		script {
+			sh 'terraform init'
+              		sh 'terraform validate'
+               		sh 'terraform plan -var=ENV=$ENV -var=region=$region --auto--approve'
+		}
             }
         }
 
