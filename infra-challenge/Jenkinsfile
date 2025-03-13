@@ -26,7 +26,7 @@ pipeline {
 		script {
 			sh 'terraform init'
               		sh 'terraform validate'
-               		sh 'terraform plan -var=ENV=env.ENV -var=region=env.region --auto--approve'
+               		sh 'echo "Satya"'
 		}
             }
         }
