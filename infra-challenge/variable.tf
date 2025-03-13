@@ -13,19 +13,19 @@ variable ENV {
   default = "DEV"
 }
 
-var client_id {
+variable client_id {
 	type = string
 	default = ""
 }
-var client_secret {
+variable client_secret {
 	type = string
 	default = ""
 }
-var tenant_id {
+variable tenant_id {
 	type = string
 	default = ""
 }
-var subscription_id {
+variable subscription_id {
 	type = string
 	default = ""
 }
