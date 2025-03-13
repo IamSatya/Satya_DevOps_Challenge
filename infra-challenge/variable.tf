@@ -13,3 +13,20 @@ variable ENV {
   default = "DEV"
 }
 
+var client_id {
+	type = string
+	default = ""
+}
+var client_secret {
+	type = string
+	default = ""
+}
+var tenant_id {
+	type = string
+	default = ""
+}
+var subscription_id {
+	type = string
+	default = ""
+}
+
