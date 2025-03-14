@@ -31,6 +31,11 @@ export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"
 
 ## 2.Jenkins Pipeline
 
-Second method using the Jenkins, create a Jenkins JOb as a pipeline and provide this repo and jenkinsfile as find on this path.
+- Second method using the Jenkins, create a Jenkins JOb as a pipeline and provide this repo and jenkinsfile as find on this path.
 You can first execute so, it will fetch the Jenkinsfile to create build with parameters and it would fail .i.e expected.
-On the second execution just click  on Build With Parameters and select/provide the region, environment, domain name, Terraform action ad execute.
+- Create a file /var/lib/jenkins/azurecreds with above azure credentials like below, as these will loaded to jenkins.
+env.client_id=" 2435467uyhgngbvdcaDwat54y6yh"
+env.client_secret=" 334566jghvdcsaewfrthhgbvcd "
+env.subscription_id="987tgky78jbtujkj"
+env.tenant_id="39876tfvbjoyghuonj hbj"
+- On the second execution just click  on Build With Parameters and select/provide the region, environment, domain name, Terraform action ad execute.
