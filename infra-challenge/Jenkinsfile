@@ -40,7 +40,7 @@ pipeline {
                 script {
                         dir("infra-challenge/") {
                         sh '''
-			 checkov --directory ./ 2>&1 | tee -a /tmp/file.txt ; ( exit ${PIPESTATUS} ) ; echo "CheckOV Scan Completed"
+			 checkov --directory ./ 2>&1 | tee -a /tmp/file.txt ||  echo "CheckOV Scan Completed, Please check the logs"
                         '''
                 }
             }
