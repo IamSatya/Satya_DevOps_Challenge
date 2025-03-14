@@ -40,7 +40,7 @@ pipeline {
                 script {
                         dir("infra-challenge/") {
                         sh '''
-			 checkov --directory ./
+			 checkov --directory ./ 2>&1 | tee -a /tmp/file.txt ; ( exit ${PIPESTATUS} )
                         '''
                 }
             }
