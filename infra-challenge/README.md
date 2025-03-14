@@ -1,2 +1,36 @@
-# Satya_DevOps_Challenge
-FMC DevOps Challenge
+# DEPLOYMENT INSTRUCTIONS
+This code can be deployed via manually or through Jenkins as a pipeline.
+Below are the steps for provisioning via Manually.
+## 1. Manual way
+
+Log in to Azure
+- az login
+Create Service Principal
+az ad sp create-for-rbac -n az-fmc --role="Contributor" --scopes="/subscriptions/83780e21-6190-4668-a1bd-493f5527f0fd"
+Note: Use the values generated here to export the variables in the next step
+{
+  "appId": "q43546576yjfewehjnbffr4567",
+  "displayName": "az-fmc",
+  "password": "324567kmjhgngbfvffgnhmjdbfd ",
+  "tenant": "7679ihbvt67890ojhg678i"
+}
+
+Set env vars so that the service principal is used for authentication
+export ARM_CLIENT_ID="SCDSBNHMYUJHXGFFNGHMTJY"
+export ARM_CLIENT_SECRET=" aegtrhrtfgvfgtyjtyukyuhfvdfsdc "
+export ARM_SUBSCRIPTION_ID="ldsjnvoejnfjldvn;jng;jn;jd "
+export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"
+
+az group create --name tfbackend-fmc --location eastus
+az storage account create --resource-group tfbackend-fmc --name tfbackendfmcsatya --sku Standard_LRS --encryption-services blob
+az storage container create --name tfstate --account-name tfbackendfmcsatya
+
+terraform init
+terraform apply -var=domain_name=domainname -var=ENV=ENVNAME -var=region=regionname -var=client_id="${client_id}" -var=client_secret="${client_secret}" -var=tenant_id="${tenant_id}" -var=subscription_id="${subscription_id}"  --auto-approve
+
+
+## 2.
+
+Second method using the Jenkins, create a Jenkins JOb as a pipeline and provide this repo and jenkinsfile as find on this path.
+You can first execute so, it will fetch the Jenkinsfile to create build with parameters and it would fail .i.e expected.
+On the second execution just click  on Build With Parameters and select/provide the region, environment, domain name, Terraform action ad execute.
