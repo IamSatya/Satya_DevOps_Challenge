@@ -29,7 +29,7 @@ export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"
 - terraform apply -var=domain_name=domainname -var=ENV=ENVNAME -var=region=regionname -var=client_id="${client_id}" -var=client_secret="${client_secret}" -var=tenant_id="${tenant_id}" -var=subscription_id="${subscription_id}"  --auto-approve
 
 
-## 2.
+## 2.Jenkins Pipeline
 
 Second method using the Jenkins, create a Jenkins JOb as a pipeline and provide this repo and jenkinsfile as find on this path.
 You can first execute so, it will fetch the Jenkinsfile to create build with parameters and it would fail .i.e expected.
