@@ -45,11 +45,3 @@ resource "azurerm_virtual_machine_scale_set_extension" "oms_mma02" {
   PROTECTED_SETTINGS
 }
 
-resource "azurerm_virtual_machine_scale_set_extension" "da" {
-  name                         = "DAExtension"
-  virtual_machine_scale_set_id =  azurerm_orchestrated_virtual_machine_scale_set.vmss_terraform_tutorial.id
-  publisher                    = "Microsoft.Azure.Monitoring.DependencyAgent"
-  type                         = "DependencyAgentLinux"
-  type_handler_version         = "9.5"
-  auto_upgrade_minor_version   = true
-}
