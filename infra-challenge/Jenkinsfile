@@ -26,7 +26,7 @@ pipeline {
 			dir("infra-challenge/") {
 			sh '''
 			  set +x
-			  terraform init -migrate-state
+			  terraform init -backend-config=`"key=${region}/${ENV}/app.terraform.tfstate" -migrate-state
               		  terraform validate
                		  terraform ${tfact} -var=domain_name=${domainname} -var=ENV=${ENV} -var=region=${region} -var=client_id="${client_id}" -var=client_secret="${client_secret}" -var=tenant_id="${tenant_id}" -var=subscription_id="${subscription_id}"  --auto-approve
 			  set -x
