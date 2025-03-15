@@ -9,19 +9,19 @@ Log in to Azure
 - az ad sp create-for-rbac -n az-fmc --role="Contributor" --scopes="/subscriptions/83780e21-6190-4668-a1bd-493f5527f0fd"
 Note: Use the values generated here to export the variables in the next step
 {
-  "appId": "q43546576yjfewehjnbffr4567",
-  "displayName": "az-fmc",
-  "password": "324567kmjhgngbfvffgnhmjdbfd ",
-  "tenant": "7679ihbvt67890ojhg678i"
+  "appId": "q43546576yjfewehjnbffr4567",<br />
+  "displayName": "az-fmc",<br />
+  "password": "324567kmjhgngbfvffgnhmjdbfd ",<br />
+  "tenant": "7679ihbvt67890ojhg678i"<br />
 }
 
 ### Set ENV Variable for Terraform Authentication to Azure
 - Set env vars so that the service principal is used for authentication
 ### Setting up ENV Variable
-export ARM_CLIENT_ID="SCDSBNHMYUJHXGFFNGHMTJY"
-export ARM_CLIENT_SECRET=" aegtrhrtfgvfgtyjtyukyuhfvdfsdc "
-export ARM_SUBSCRIPTION_ID="ldsjnvoejnfjldvn;jng;jn;jd "
-export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"
+export ARM_CLIENT_ID="SCDSBNHMYUJHXGFFNGHMTJY"<br />
+export ARM_CLIENT_SECRET=" aegtrhrtfgvfgtyjtyukyuhfvdfsdc "<br />
+export ARM_SUBSCRIPTION_ID="ldsjnvoejnfjldvn;jng;jn;jd "<br />
+export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"<br />
 
 ### Create Storage Account and Storage Container for TF state Remote Backend (user defined for storage account)
 - az group create --name tfbackend-fmc --location eastus
@@ -35,10 +35,10 @@ export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"
 ## 2.Jenkins Pipeline
 
 - Second method using the Jenkins, create a Jenkins JOb as a pipeline and provide this repo and jenkinsfile as find on this path.
-You can first execute so, it will fetch the Jenkinsfile to create build with parameters and it would fail .i.e expected.
-- Create a file /var/lib/jenkins/azurecreds with above azure credentials like below, as these will loaded to jenkins.
-- env.client_id=" 2435467uyhgngbvdcaDwat54y6yh"
-- env.client_secret=" 334566jghvdcsaewfrthhgbvcd "
-- env.subscription_id="987tgky78jbtujkj"
-- env.tenant_id="39876tfvbjoyghuonj hbj"
+You can first execute so, it will fetch the Jenkinsfile to create build with parameters and it would fail .i.e expected.<br />
+- Create a file /var/lib/jenkins/azurecreds with above azure credentials like below, as these will loaded to jenkins.<br />
+- env.client_id=" 2435467uyhgngbvdcaDwat54y6yh"<br />
+- env.client_secret=" 334566jghvdcsaewfrthhgbvcd "<br />
+- env.subscription_id="987tgky78jbtujkj"<br />
+- env.tenant_id="39876tfvbjoyghuonj hbj"<br />
 - On the second execution just click  on Build With Parameters and select/provide the region, environment, domain name, Terraform action and execute.
