@@ -17,6 +17,7 @@ Note: Use the values generated here to export the variables in the next step
 
 ### Set ENV Variable for Terraform Authentication to Azure
 - Set env vars so that the service principal is used for authentication
+### Setting up ENV Variable
 export ARM_CLIENT_ID="SCDSBNHMYUJHXGFFNGHMTJY"
 export ARM_CLIENT_SECRET=" aegtrhrtfgvfgtyjtyukyuhfvdfsdc "
 export ARM_SUBSCRIPTION_ID="ldsjnvoejnfjldvn;jng;jn;jd "
