@@ -3,7 +3,7 @@ This code can be deployed via manually or through Jenkins as a pipeline.
 Below are the steps for provisioning via Manually and through Jenkins as a Pipeline Job.
 ## 1. Manual way
 ### Azure Auth and Create SP
-Log in to Azure
+Log in to Azure<br />
 - az login
 - Create Service Principal
 - az ad sp create-for-rbac -n az-fmc --role="Contributor" --scopes="/subscriptions/83780e21-6190-4668-a1bd-493f5527f0fd"
@@ -37,8 +37,8 @@ export ARM_TENANT_ID="j4nt549jiwnveu9b92nd02"<br />
 - Second method using the Jenkins, create a Jenkins JOb as a pipeline and provide this repo and jenkinsfile as find on this path.
 You can first execute so, it will fetch the Jenkinsfile to create build with parameters and it would fail .i.e expected.<br />
 - Create a file /var/lib/jenkins/azurecreds with above azure credentials like below, as these will loaded to jenkins.<br />
-- env.client_id=" 2435467uyhgngbvdcaDwat54y6yh"<br />
-- env.client_secret=" 334566jghvdcsaewfrthhgbvcd "<br />
-- env.subscription_id="987tgky78jbtujkj"<br />
-- env.tenant_id="39876tfvbjoyghuonj hbj"<br />
+env.client_id=" 2435467uyhgngbvdcaDwat54y6yh"<br />
+env.client_secret=" 334566jghvdcsaewfrthhgbvcd "<br />
+env.subscription_id="987tgky78jbtujkj"<br />
+env.tenant_id="39876tfvbjoyghuonj hbj"<br />
 - On the second execution just click  on Build With Parameters and select/provide the region, environment, domain name, Terraform action and execute.
